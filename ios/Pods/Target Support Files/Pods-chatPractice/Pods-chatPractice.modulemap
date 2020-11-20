@@ -1,0 +1,6 @@
+module Pods_chatPractice {
+  umbrella header "Pods-chatPractice-umbrella.h"
+
+  export *
+  module * { export * }
+}
