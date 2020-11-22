@@ -23,7 +23,7 @@
 
     ],
     "Firebase/Firestore": [
-      "~> 6.34.0"
+      "~> 7.1.0"
     ]
   },
   "static_framework": false

@@ -7,12 +7,13 @@ import Input from "~/components/Input";
 import Message from "~/components/Message";
 import { UserContext } from "~/contexts";
 import { firebaseService } from "~/services";
-import { messagesReducer } from "~/hooks/reducers";
+import messagesReducer from "~/hooks/reducers";
+import { COLLECTIONS } from "~/constants";
 
 import theme from "~/utils/theme";
 
 const MessageContainer = styled.View`
-  height: ${Dimensions.get("window").height}px;
+  height: ${Dimensions.get("window").height * 0.8}px;
   padding-bottom: 100px;
 `;
 const InputContainer = styled.View`
@@ -30,18 +31,17 @@ const Hooks = () => {
     const { uid } = useContext(UserContext);
     const [messages, dispatchMessages] = useReducer(messagesReducer, []);
     useEffect(() => {
-        return firestore()
-            .collection("Messages")
+        return firebaseService.messageRef
             .orderBy("created_at", "desc")
-            .onSnapshot((snapshot) => {
-                dispatchMessages({ type: "add", payload: snapshot.docs });
+            .onSnapshot((quarysnapshot) => {
+                dispatchMessages({ type: "add", payload: quarysnapshot.docs });
             });
     }, [false]);
 
     /* const mock = [
-                                        { id: 1, message: "Hello", side: "left" },
-                                        { id: 2, message: "Hi!", side: "right" },
-                                    ]; */
+                                                                  { id: 1, message: "Hello", side: "left" },
+                                                                  { id: 2, message: "Hi!", side: "right" },
+                                                              ]; */
     return (
         <SafeAreaView>
             <MessageContainer>

@@ -31,6 +31,7 @@ const Input = () => {
 
   const handlePress = useCallback(() => {
     () => {
+      console.log("보내기");
       setIsLoading(true);
       firebaseService.createMessage({ message, uid }).then(() => {
         setIsLoading(false);
