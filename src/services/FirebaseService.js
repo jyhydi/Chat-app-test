@@ -15,6 +15,15 @@ export default class FirebaseService {
         }
     }
 
+    async emailPWSignIn({ email, password }) {
+        try {
+            const res = await auth().createUserWithEmailAndPassword(email, password);
+            return { user: res.user };
+        } catch (error) {
+            return { error };
+        }
+    }
+
     async fetchMessages() {
         const messages = await this.messageRef
             .orderBy("created_at", "desc")

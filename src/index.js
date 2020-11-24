@@ -4,30 +4,30 @@ import { Alert } from "react-native";
 import Loader from "./components/Loader";
 import Hooks from "./hooks/Hooks";
 
-import { UserContext } from "./contexts";
 import { firebaseService } from "./services";
+import useStore from "~/useStore";
 
-export default function App() {
-    const [user, setUser] = useState(null);
+const { userstore } = useStore();
+export default App = () => {
+    const [user, setUser] = useState([]);
 
-    useEffect(function () {
-        firebaseService.signIn().then(({ user, error }) => {
-            if (error) {
-                Alert.alert("Something went wrong");
-                return;
-            }
-
-            setUser(user);
-        });
+    useEffect(async () => {
+        try {
+            const FBUser = await firebaseService.signIn();
+            setUser(FBUser);
+            userstore.addFBUser(FBUser);
+            const mobxuser = await userstore.FBUser;
+            console.log("stored : ", mobxuser);
+        } catch (error) {
+            Alert.alert("Something went wrong");
+        }
     }, []);
-
     if (!user) {
         return <Loader />;
     }
-
     return (
-        <UserContext.Provider value={user}>
+        <>
             <Hooks />
-        </UserContext.Provider>
+        </>
     );
-}
+};

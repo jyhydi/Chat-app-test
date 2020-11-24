@@ -5,12 +5,13 @@ import firestore from "@react-native-firebase/firestore";
 
 import Input from "~/components/Input";
 import Message from "~/components/Message";
-import { UserContext } from "~/contexts";
 import { firebaseService } from "~/services";
 import messagesReducer from "~/hooks/reducers";
-import { COLLECTIONS } from "~/constants";
+import useStore from "~/useStore";
 
 import theme from "~/utils/theme";
+
+const { userstore } = useStore();
 
 const MessageContainer = styled.View`
   height: ${Dimensions.get("window").height * 0.8}px;
@@ -28,7 +29,14 @@ const InputContainer = styled.View`
 `;
 
 const Hooks = () => {
-    const { uid } = useContext(UserContext);
+    let FBuid = "";
+    const FBUser = userstore.FBUser.user;
+
+    if (FBUser) {
+        FBuid = FBUser.uid;
+    }
+    console.log("FBUID : ", FBuid);
+
     const [messages, dispatchMessages] = useReducer(messagesReducer, []);
     useEffect(() => {
         return firebaseService.messageRef
@@ -39,9 +47,9 @@ const Hooks = () => {
     }, [false]);
 
     /* const mock = [
-                                                                  { id: 1, message: "Hello", side: "left" },
-                                                                  { id: 2, message: "Hi!", side: "right" },
-                                                              ]; */
+                                                                                                                    { id: 1, message: "Hello", side: "left" },
+                                                                                                                    { id: 2, message: "Hi!", side: "right" },
+                                                                                                                ]; */
     return (
         <SafeAreaView>
             <MessageContainer>
@@ -53,7 +61,7 @@ const Hooks = () => {
                     }}
                     renderItem={({ item }) => {
                         const data = item.data();
-                        const side = data.user_id === uid ? "right" : "left";
+                        const side = data.user_id === FBuid ? "right" : "left";
                         return <Message side={side} message={data.message} />;
                     }}
                 />

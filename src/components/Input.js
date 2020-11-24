@@ -1,10 +1,12 @@
-import React, { useCallback, useState, useContext } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components/native";
 import { Button, Dimensions } from "react-native";
 import theme from "../utils/theme";
-import { UserContext } from "~/contexts";
 import { firebaseService } from "~/services";
 import Loader from "~/components/Loader";
+import useStore from "~/useStore";
+
+const { userstore } = useStore();
 
 const Container = styled.View`
   flex-direction: row;
@@ -23,22 +25,27 @@ const MsgInput = styled.TextInput`
   flex-direction: row;
   padding-horizontal: 10px;
 `;
-
 const Input = () => {
-  const { uid } = useContext(UserContext);
+  const FBUser = userstore.FBUser.user;
+  let FBuid = "";
+
+  if (FBUser) {
+    FBuid = FBUser.uid;
+  }
+  console.log("FBUid at input : ", FBuid);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const handlePress = useCallback(() => {
-    () => {
-      console.log("보내기");
-      setIsLoading(true);
-      firebaseService.createMessage({ message, uid }).then(() => {
-        setIsLoading(false);
-        setMessage("");
-      });
-    };
-  }, [message]);
+  const handlePress = () => {
+    console.log("보내기");
+    setIsLoading(true);
+    firebaseService.createMessage({ message, FBuid }).then(() => {
+      setIsLoading(false);
+      setMessage("");
+      console.log("message sent", message);
+    });
+  };
+
   return (
     <Container>
       <InputContainer>
